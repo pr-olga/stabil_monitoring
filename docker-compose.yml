@@ -1,0 +1,28 @@
+version: '3.2'
+
+services:
+
+  grafana:
+    image: grafana/grafana:7.0.0
+    ports:
+      - 3000:3000
+    # before mounting check permissions
+    volumes:
+      - "./var/lib/grafana:/var/lib/grafana"
+    user: "472:472" # grafana user
+    network_mode: host
+
+  elasticsearch:
+    image: elasticsearch:5.6-alpine
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - "./var/lib/elasticsearch:/var/lib/elasticsearch"
